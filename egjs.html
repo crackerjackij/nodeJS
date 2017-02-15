@@ -1,0 +1,47 @@
+<html>
+<head>
+  <!-- 1) Load jQuery -->
+  <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+  <!-- 2) Load egjs packaged file -->
+  <script src="http://naver.github.io/egjs/latest/dist/pkgd/eg.pkgd.min.js"></script>
+<style>
+
+</style>
+</head>
+<body>
+  <!-- HTML -->
+      <div id="wrapper">
+          <div style="background-color: red;">
+              <p>Layer 0</p>
+          </div>
+          <div style="background-color: blue;">
+              <p>Layer 1</p>
+          </div>
+          <div style="background-color: green;">
+              <p>Layer 2</p>
+          </div>
+      </div>
+      <script>
+      // create flicking ui without option
+$("#wrapper").flicking();
+
+// create flicking ui with options
+//$("#wrapper").flicking({
+// duration: 300,
+// circular: true,
+// defaultIndex: 1
+//});
+
+// create flicking ui and get instance of it
+/*
+var $el = $("#wrapper").flicking();
+$el.flicking("instance");  // return instance
+
+// call some methods
+$el.flicking("next");
+$el.flicking("prev", 500);
+*/
+       </script>
+</body>
+</html>

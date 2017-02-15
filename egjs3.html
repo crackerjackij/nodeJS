@@ -1,0 +1,115 @@
+<html>
+<head>
+  <!-- 1) Load jQuery -->
+  <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+  <!-- 2) Load egjs packaged file -->
+  <script src="http://naver.github.io/egjs/latest/dist/pkgd/eg.pkgd.min.js"></script>
+<style>
+#content .list {
+    width:100%;
+    height:220px;
+    background-color:#eee;
+    margin:5px; font-size:2em;
+}
+
+#content .check_visible { background-color:#CECEBD; border-color:#bb0; }
+#content .visible { background-color:#BFDB9E; }
+#content .lazyloaded {
+    background-image : url(http://m.bboom2.naver.com/im/line/sticker/sally_friends/original/27380.png);
+}
+
+
+
+.ctrlbox {
+    position:fixed;
+    padding:20px;
+    background: #F2C61B;
+    right : 0px;
+    top : 0px;
+}
+
+.inline {
+  display:inline-block;
+}
+
+input {
+  width : 50px;
+}
+</style>
+</head>
+<body>
+  <!-- HTML -->
+  <div class="ctrlbox">
+        <h4 class="inline">check interval</h4>&nbsp;<input id="checkInterval" type="number" value="200"></input>&nbsp;ms<br>
+        <h4 class="inline">expand size</h4>&nbsp;<input id="expandSize" type="number" value="0"></input>&nbsp;px<br><br>
+        <hr>
+        <h4>visible elements</h4>
+        <pre><code id="visibled"></code></pre>
+</div>
+
+<ul id="content"></ul>
+      <script>
+      $(function() {
+    var $visibled = $("#visibled"),
+        $checkInterval = $("#checkInterval"),
+        $expandSize = $("#expandSize"),
+        $content = $("#content"),
+        documentHeight = document.documentElement.scrollHeight,
+        html = [];
+
+    // append new content.
+    function append() {
+        if(documentHeight-100 <= window.scrollY) {
+            documentHeight = document.documentElement.scrollHeight;
+            for(var i=0; i<10; i++) {
+                $content.append("<li class='list check_visible lazyloaded'>#append</li>");
+            }
+            // update targets
+            visibleView.refresh();
+        }
+    }
+
+    // make list
+    for(var i=0; i<200; i++) {
+        html.push("<li class='list check_visible lazyloaded'>#");
+        html.push(i+1);
+        html.push("</li>");
+    }
+    $("#content").html(html.join(""));
+
+    var visibleView = new eg.Visible(document,{
+        targetClass : "check_visible",
+        expandSize : 0
+    }).on("change", function(e) {
+        // process visible elements
+        $(e.visible).addClass("visible");
+
+        // process invisible elements
+        $(e.invisible).removeClass("visible");
+
+        $visibled.empty();
+
+        $(e.visible).each(function(i) {
+            $visibled.append(this.innerHTML+ (((i+1) % 3) == 0 ? "\n" : ","));
+            var $el = $(this);
+            // lazy loading
+            if(!$el.hasClass("lazyloaded")) {
+                $el.addClass("lazyloaded");
+            }
+            append();
+        });
+
+    });
+
+    // bind scroll event
+    $(window).scroll(function() {
+        visibleView.options.expandSize = $expandSize.val();
+        visibleView.check($checkInterval.val());
+    });
+
+    visibleView.check();
+});
+       </script>
+</body>
+</html>
